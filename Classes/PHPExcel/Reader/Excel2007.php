@@ -806,10 +806,12 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 							}
 
 							if ($xmlSheet && $xmlSheet->sheetData && $xmlSheet->sheetData->row) {
+                                $cIndex = 1;
 								foreach ($xmlSheet->sheetData->row as $row) {
 									if ($row["ht"] && !$this->_readDataOnly) {
 										$docSheet->getRowDimension(intval($row["r"]))->setRowHeight(floatval($row["ht"]));
 									}
+                                    $rowIndex = 0;
 									if (self::boolean($row["hidden"]) && !$this->_readDataOnly) {
 										$docSheet->getRowDimension(intval($row["r"]))->setVisible(FALSE);
 									}
@@ -825,6 +827,9 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 
 									foreach ($row->c as $c) {
 										$r 					= (string) $c["r"];
+                                        if ($r == '') {
+                                            $r = PHPExcel_Cell::stringFromColumnIndex($rowIndex) . $cIndex;
+                                        }
 										$cellDataType 		= (string) $c["t"];
 										$value				= null;
 										$calculatedValue 	= null;
@@ -935,7 +940,9 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 											$cell->setXfIndex(isset($styles[intval($c["s"])]) ?
 												intval($c["s"]) : 0);
 										}
+                                        $rowIndex += 1;
 									}
+                                    $cIndex += 1;
 								}
 							}
 
