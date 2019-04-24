@@ -357,31 +357,37 @@ class PHPExcel_Settings
     } // function getPdfRendererPath()
 
     /**
-     * Set default options for libxml loader
+     * Set options for libxml loader
      *
-     * @param int $options Default options for libxml loader
+     * @param   int   $options   Options for libxml loader
      */
     public static function setLibXmlLoaderOptions($options = null)
     {
-        if (is_null($options)) {
+        if (is_null($options) && defined('LIBXML_DTDLOAD')) {
             $options = LIBXML_DTDLOAD | LIBXML_DTDATTR;
         }
-        @libxml_disable_entity_loader($options == (LIBXML_DTDLOAD | LIBXML_DTDATTR)); 
-        self::$_libXmlLoaderOptions = $options;
-    } // function setLibXmlLoaderOptions
+        if (version_compare(PHP_VERSION, '5.2.11') >= 0) {
+            @libxml_disable_entity_loader((bool) $options);
+        }
+        self::$libXmlLoaderOptions = $options;
+    }
 
     /**
-     * Get default options for libxml loader.
+     * Get defined options for libxml loader.
      * Defaults to LIBXML_DTDLOAD | LIBXML_DTDATTR when not set explicitly.
      *
      * @return int Default options for libxml loader
      */
     public static function getLibXmlLoaderOptions()
     {
-        if (is_null(self::$_libXmlLoaderOptions)) {
+        if (is_null(self::$libXmlLoaderOptions) && defined('LIBXML_DTDLOAD')) {
             self::setLibXmlLoaderOptions(LIBXML_DTDLOAD | LIBXML_DTDATTR);
+        } elseif (is_null(self::$libXmlLoaderOptions)) {
+            self::$libXmlLoaderOptions = true;
         }
-        @libxml_disable_entity_loader($options == (LIBXML_DTDLOAD | LIBXML_DTDATTR));
-        return self::$_libXmlLoaderOptions;
-    } // function getLibXmlLoaderOptions
+        if (version_compare(PHP_VERSION, '5.2.11') >= 0) {
+            @libxml_disable_entity_loader((bool) self::$libXmlLoaderOptions);
+        }
+        return self::$libXmlLoaderOptions;
+    }
 }
