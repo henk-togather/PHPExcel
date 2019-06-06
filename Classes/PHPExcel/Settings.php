@@ -110,7 +110,7 @@ class PHPExcel_Settings
      *
      * @var int
      */
-    private static $_libXmlLoaderOptions = null;
+    private static $libXmlLoaderOptions = null;
 
     /**
      * Set the Zip handler Class that PHPExcel should use for Zip file management (PCLZip or ZipArchive)
