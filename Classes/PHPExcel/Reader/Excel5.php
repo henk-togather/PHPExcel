@@ -2276,6 +2276,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 					$this->_mapCellStyleXfIndex[$this->_xfIndex] = 0;
 				}
 			} else {
+                $this->_mapCellXfIndex[0] = 0;
 				// we read all cell XF records
 				$this->_phpExcel->addCellXf($objStyle);
 				$this->_mapCellXfIndex[$this->_xfIndex] = count($this->_phpExcel->getCellXfCollection()) - 1;
